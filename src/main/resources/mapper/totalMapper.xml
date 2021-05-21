@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.marx.dao.TotalMapper">
+
+    <resultMap id="TotalResult" type="Total">
+        <result property="id" column="id"/>
+        <result property="childId" column="child_id"/>
+        <result property="childClass" column="child_class"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="fileAddress" column="file_address"/>
+        <result property="date" column="date"/>
+    </resultMap>
+
+    <select id="queryById" resultMap="TotalResult">
+        select t.id as id, t.child_id as child_id, c.`name` as child_class, t.title as title, t.content as content, t.file_address as file_address, t.`date` as date
+        from total as t, category as c
+        where t.child_id = c.id and t.id = #{id};
+    </select>
+
+    <select id="queryAllLimit" resultMap="TotalResult">
+        select t.id as id, t.child_id as child_id, c.`name` as child_class, t.title as title, t.content as content, t.file_address as file_address, t.`date` as date
+        from total as t, category as c
+        <where>
+            t.child_id = c.id
+            <if test="total.childId != '' and total.childId != null">
+                and t.child_id = #{childId}
+            </if>
+            <if test="total.title != '' and total.title != null">
+                and t.title like concat('%', #{title}, '%')
+            </if>
+            <if test="total.content != '' and total.content != null">
+                and t.content like concat('%', #{content}, '%')
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+</mapper>

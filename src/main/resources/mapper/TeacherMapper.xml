@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.marx.dao.TeacherMapper">
+
+
+    <resultMap id="TeacherResult" type="Teacher">
+        <result property="id" column="id"/>
+        <result property="childId" column="child_id"/>
+        <result property="childClass" column="child_class"/>
+        <result property="name" column="name"/>
+        <result property="img" column="img"/>
+        <result property="intro" column="intro"/>
+    </resultMap>
+
+    <select id="queryById" resultMap="TeacherResult">
+        select t.id as id, t.child_id as child_id, c.`name` as child_class, t.`name` as name, t.img as img, t.intro as intro
+        from teacher as t, category as c
+        where t.child_id = c.id and t.id = #{id};
+    </select>
+
+
+    <select id="queryAllLimit" resultMap="TeacherResult" parameterType="Teacher">
+        select t.id as id, t.child_id as child_id, c.`name` as child_class, t.`name` as name, t.img as img, t.intro as intro
+        from teacher as t, category as c
+        <where>
+            t.child_id = c.id
+            <if test="childId != '' and childId != null ">
+                and t.child_id = #{childId}
+            </if>
+            <if test="name != '' and name != null">
+                and t.`name` like concat('%', #{name}, '%')
+            </if>
+            <if test="intro != '' and intro != null">
+                and t.intro like concat('%', #{intro}, '%')
+            </if>
+        </where>
+        limit #{offset},#{limit}
+    </select>
+
+</mapper>

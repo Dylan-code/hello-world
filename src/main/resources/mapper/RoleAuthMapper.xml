@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.marx.dao.RoleAuthMapper">
+
+    <resultMap id="RoleAuthResult" type="Role">
+        <result property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <collection property="authorities" ofType="authority">
+            <result property="authId" column="auth_id"/>
+            <result property="authName" column="auth_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAll" resultMap="RoleAuthResult">
+        select r.role_id role_id, r.role_name role_name, a.auth_id auth_id, a.auth_name auth_name
+        from
+        role as r, authority as a, role_auth as ra
+        where r.role_id = ra.role_id and a.auth_id = ra.auth_id
+        <if test="roleId != null and roleId != ''">
+            and r.role_id = #{roleId}
+        </if>
+    </select>
+
+    <select id="queryById" resultMap="RoleAuthResult">
+        select r.role_id role_id, r.role_name role_name, a.auth_id auth_id, a.auth_name auth_name
+        from role as r,
+             authority as a,
+             role_auth as ra
+        where r.role_id = ra.role_id
+          and a.auth_id = ra.auth_id
+          and r.role_id = #{roleId}
+    </select>
+
+    <select id="checkRoleAuth" resultType="com.marx.entity.Role">
+        select r.role_id roleId, r.role_name roleName
+        from `role` as r,
+             role_auth as ra,
+             authority as a
+        where r.role_id = ra.role_id
+          and ra.auth_id = a.auth_id
+          and r.role_id = #{roleId}
+          and a.auth_name like concat("%", #{authName}, "%")
+    </select>
+
+    <insert id="addRoleAuth">
+        insert into role_auth (role_id, auth_id)
+        values
+        <foreach collection="authIds" item="authId" separator=",">
+            (#{roleId}, #{authId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleAuth">
+        delete from role_auth
+        <where>
+            <if test="roleIds != null and roleIds != ''">
+                and role_id in
+                <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                    #{roleId}
+                </foreach>
+            </if>
+            <if test="authIds != null and authIds !=''">
+                and auth_id in
+                <foreach collection="authIds" item="authId" open="(" separator="," close=")">
+                    #{authId}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteById">
+        delete from `role`
+        <where>
+            role_id in
+            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+        </where>
+    </delete>
+
+    <insert id="addAuth">
+        insert into authority (auth_name)
+        values (#{authName});
+    </insert>
+
+    <delete id="deleteAuth">
+        delete from authority
+        <where>
+            auth_id in
+            <foreach collection="authIds" item="authId" open="(" separator="," close=")">
+                #{authId}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>
