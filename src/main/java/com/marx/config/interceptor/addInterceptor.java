@@ -20,7 +20,7 @@ public class addInterceptor implements WebMvcConfigurer {
     interceptorRegistration.addPathPatterns("/**");
     //添加你不想被拦截的请求
     interceptorRegistration.excludePathPatterns("/login","/logout").
-            excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**")
+            excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/**")
             .excludePathPatterns("/upload/**");
   }
 }

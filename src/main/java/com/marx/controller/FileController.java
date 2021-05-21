@@ -54,8 +54,7 @@ public class FileController {
      * */
     @PostMapping("/fill/{id}")
     @ResponseBody
-    public Res fill(@RequestParam("fill") MultipartFile fill,@PathVariable String id){
-
+    public Res fill(@RequestParam("fill") MultipartFile fill,@PathVariable String id,HttpServletResponse response){
 
         //获取文件后缀名
         String fileName = fill.getOriginalFilename();
@@ -65,7 +64,7 @@ public class FileController {
             try {
                 Map<String, Object> map = BeanUtils.convert(teacherService.getTeacherById(id));
                 //填充成功，则返回文件的访问路径
-               String result = fileUtil.fillWord(fill,map).replaceAll("\\\\", "/");
+               String result = fileUtil.fillWord(fill,map,response).replaceAll("\\\\", "/");
                return Response.ok(result);
             } catch (IOException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -76,4 +75,10 @@ public class FileController {
         }
     }
 
+    @PostMapping("/testfile")
+    @ResponseBody
+    public Res testFile(@RequestParam("file") MultipartFile file){
+        System.out.println("文件大小------->" + file.getSize());
+        return Response.ok();
+    }
 }
