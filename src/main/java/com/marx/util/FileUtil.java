@@ -42,14 +42,16 @@ public class FileUtil {
     private MarxConfig marxConfig;
 
     public static void main(String[] args) {
-        User user = new User("admin", "123456");
-        try {
-            Map<String, Object> convert = BeanUtils.convert(user);
-            String username = (String) convert.get("username");
-            System.out.println(username);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        System.out.println(Integer.MAX_VALUE);
+    }
+
+    /**
+     * 获取文件大小
+     * @param b bytes
+     * @return MB
+     * */
+    public Long getFileSize(Long b){
+        return b/1024/1024;
     }
 
     /**
@@ -134,7 +136,7 @@ public class FileUtil {
     /**
      * 填充word文件里的内容    ${name} -->  沃邦
      */
-    public String fillWord(MultipartFile file, Map<String, Object> map, HttpServletResponse response) throws IOException {
+    public String fillWord(MultipartFile file, Map<String, Object> map) throws IOException {
         boolean isChange = false;
         String oldValue = "";
         XWPFDocument document = new XWPFDocument(file.getInputStream());
@@ -153,9 +155,8 @@ public class FileUtil {
         }
         //如果文本内容发生替换，则保存并将访问路径返回
         if (isChange) {
-            return saveFillFile(document, response);
+            return saveFillFile(document);
         }
-        System.out.println("填充失败了-------------------------");
         return "填充失败";
     }
 
@@ -209,7 +210,7 @@ public class FileUtil {
      * @param document 文档对象
      * @return 虚拟访问路径
      */
-    public String saveFillFile(XWPFDocument document, HttpServletResponse response) {
+    public String saveFillFile(XWPFDocument document) {
         FileOutputStream out = null;
         ByteArrayOutputStream ostream = null;
         //用户访问用的虚拟路劲
@@ -241,4 +242,5 @@ public class FileUtil {
         }
         return "";
     }
+
 }

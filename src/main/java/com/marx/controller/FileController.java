@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @CrossOrigin
@@ -33,8 +34,8 @@ public class FileController {
     @PostMapping("/upload")
     @ResponseBody
     public Res upload(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file == null) {
-            return Response.err("文件上传失败，请重写上传");
+        if (Objects.isNull(file) || fileUtil.getFileSize(file.getSize()) > 10) {
+            return Response.err("文件上传失败，请重写上传。注意文件大小不能超过10MB");
         }
 
         /* 执行将文件保存到磁盘的操作 */
@@ -50,12 +51,14 @@ public class FileController {
     }
 
     /**
-     * 向word中填充文件
+     * 用教师信息向word中填充内容
      * */
     @PostMapping("/fill/{id}")
     @ResponseBody
-    public Res fill(@RequestParam("fill") MultipartFile fill,@PathVariable String id,HttpServletResponse response){
-
+    public Res fill(@RequestParam("fill") MultipartFile fill,@PathVariable String id){
+        if (Objects.isNull(fill) || fileUtil.getFileSize(fill.getSize()) > 10) {
+            return Response.err("文件上传失败，请重写上传。注意文件大小不能超过10MB");
+        }
         //获取文件后缀名
         String fileName = fill.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
@@ -64,7 +67,7 @@ public class FileController {
             try {
                 Map<String, Object> map = BeanUtils.convert(teacherService.getTeacherById(id));
                 //填充成功，则返回文件的访问路径
-               String result = fileUtil.fillWord(fill,map,response).replaceAll("\\\\", "/");
+               String result = fileUtil.fillWord(fill,map).replaceAll("\\\\", "/");
                return Response.ok(result);
             } catch (IOException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -75,10 +78,11 @@ public class FileController {
         }
     }
 
+
     @PostMapping("/testfile")
     @ResponseBody
     public Res testFile(@RequestParam("file") MultipartFile file){
-        System.out.println("文件大小------->" + file.getSize());
+        System.out.println("文件大小------->" + fileUtil.getFileSize(file.getSize()));
         return Response.ok();
     }
 }
