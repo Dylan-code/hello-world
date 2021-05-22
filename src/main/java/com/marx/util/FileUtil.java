@@ -1,13 +1,10 @@
 package com.marx.util;
 
-import java.net.URLEncoder;
 import com.marx.config.MarxConfig;
 import com.marx.dao.TempFileMapper;
 import com.marx.entity.TempFile;
-import com.marx.entity.User;
 import com.marx.service.TempFileService;
 import com.marx.util.uuid.UUID;
-import com.wobangkj.utils.BeanUtils;
 import com.wobangkj.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -19,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,11 +45,12 @@ public class FileUtil {
 
     /**
      * 获取文件大小
+     *
      * @param b bytes
      * @return MB
-     * */
-    public Long getFileSize(Long b){
-        return b/1024/1024;
+     */
+    public Long getFileSize(Long b) {
+        return b / 1024 / 1024;
     }
 
     /**
@@ -104,7 +103,7 @@ public class FileUtil {
      * 根据文件名字和路径信息删除磁盘上对应的文件
      *
      * @param FilePath 要删除的文件的相对路劲
-     * @return
+     * @return 删除是否成功
      */
     public boolean deleteDiskFile(String FilePath) {
         if (FilePath == "" || FilePath == null) {
@@ -136,7 +135,7 @@ public class FileUtil {
     /**
      * 填充word文件里的内容    ${name} -->  沃邦
      */
-    public String fillWord(MultipartFile file, Map<String, Object> map) throws IOException {
+    public String fillWord(MultipartFile file, Map<String, Object> map,HttpServletResponse response) throws IOException {
         boolean isChange = false;
         String oldValue = "";
         XWPFDocument document = new XWPFDocument(file.getInputStream());
@@ -155,7 +154,7 @@ public class FileUtil {
         }
         //如果文本内容发生替换，则保存并将访问路径返回
         if (isChange) {
-            return saveFillFile(document);
+            return saveFillToResponse(document,response,file.getOriginalFilename()) ? "填充成功" : "填充失败";
         }
         return "填充失败";
     }
@@ -241,6 +240,22 @@ public class FileUtil {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public Boolean saveFillToResponse(XWPFDocument document, HttpServletResponse response, String filename) {
+        try {
+            //response.setContentType("application/octet-stream");
+            // 强制下载文件，不打开
+            response.setContentType("application/force-download");
+            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(filename, "UTF-8"));
+            ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+            document.write(ostream);
+            response.getOutputStream().write(ostream.toByteArray());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

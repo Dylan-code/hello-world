@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -27,7 +28,7 @@ public class SlideController {
      * */
     @GetMapping("/slide")
     @ResponseBody
-    public Res allSlide(Slide slide,PageInfo pageInfo){
+    public Res allSlide(Slide slide, PageInfo pageInfo, HttpServletResponse response){
         Pager<Slide> result = slideService.allSlide(slide,pageInfo.toCon());
         return Response.ok(result);
     }
