@@ -28,8 +28,8 @@
             </div>
             <div class="line_01">&nbsp;</div>
             <ul class="side_nav_l">
-            	<li class="now"><a href="">公司新闻</a></li>
-                <li><a href="">行业资讯</a></li>
+            	<li class="now" id="btn1">公司新闻</li>
+                <li id="btn2">行业资讯</li>
             </ul>
             <div class="line_02">&nbsp;</div>
         </div>
@@ -38,10 +38,10 @@
     <!--右边主要内容-->
     <div class="s_main">
     	<!--新闻列表-->
-        <ul class="news">
+        <ul class="news" id="news">
         	<li>
             	<div class="title">
-                	<h5><a href="">深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇香港巨星钟镇香港巨星钟镇香港巨星钟镇</a></h5>
+                	<h5>深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇香港巨星钟镇香港巨星钟镇香港巨星钟镇</h5>
                     <span>[ 2015-01-01 ]</span>
                 </div>
                 <div class="des">
@@ -50,7 +50,7 @@
             </li>
             <li>
             	<div class="title">
-                	<h5><a href="">深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</a></h5>
+                	<h5>深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</h5>
                     <span>[ 2015-01-01 ]</span>
                 </div>
                 <div class="des">
@@ -59,7 +59,7 @@
             </li>
             <li>
             	<div class="title">
-                	<h5><a href="">深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</a></h5>
+                	<h5>深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</h5>
                     <span>[ 2015-01-01 ]</span>
                 </div>
                 <div class="des">
@@ -68,7 +68,7 @@
             </li>
             <li>
             	<div class="title">
-                	<h5><a href="">深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</a></h5>
+                	<h5>深圳金百合文化传媒公司举行开业盛典 香港巨星钟镇</h5>
                     <span>[ 2015-01-01 ]</span>
                 </div>
                 <div class="des">
@@ -76,23 +76,72 @@
                 </div>
             </li>
         </ul>
+
+        <ul class="news" id="msg" style="display: none">
+        	<li>
+            	<div class="title">
+                	<h5>行业咨询信息一</h5>
+                    <span>[ 2015-01-01 ]</span>
+                </div>
+                <div class="des">
+                	行业咨询详细信息.....
+                </div>
+            </li>
+            <li>
+            	<div class="title">
+                	<h5></h5>
+                    <span>[ 2015-01-01 ]</span>
+                </div>
+                <div class="des">
+                	行业咨询详细信息.....
+                </div>
+            </li>
+            <li>
+            	<div class="title">
+                	<h5></h5>
+                    <span>[ 2015-01-01 ]</span>
+                </div>
+                <div class="des">
+                	行业咨询详细信息.....
+                </div>
+            </li>
+        </ul>
+
         <div class="space_hx">&nbsp;</div>
         <!--分页导航-->
         <div class="pages">
-        	<a href="">上一页</a>
+        	<a href="" >上一页</a>
             <a class="now">1</a>
             <a href="">2</a>
             <a href="">3</a>
-            <a href="">下一页</a>
+            <a href="" id="nextPage">下一页</a>
         </div>
     </div>
 </div>
 <div class="space_hx">&nbsp;</div>
 
 <script language="javascript">
-$(function(){
 
-})
+
+let btn1 = document.getElementById("btn1");
+let btn2 = document.getElementById("btn2");
+
+let news = document.getElementById("news");
+let msg = document.getElementById("msg");
+btn1.addEventListener("click",function (){
+    btn1.className = "now";
+    btn2.className = "";
+    msg.style.display = "none";
+    news.style.display = "block";
+});
+
+btn2.addEventListener("click",function (){
+    btn2.className = "now";
+    btn1.className = "";
+    msg.style.display = "block";
+    news.style.display = "none";
+});
+
 </script>
 </body>
 </html>
